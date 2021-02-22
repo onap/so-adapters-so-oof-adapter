@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onap.so</groupId>
     <artifactId>adapters</artifactId>
-    <version>1.7.1-SNAPSHOT</version>
+    <version>1.8.0-SNAPSHOT</version>
   </parent>
   <groupId>org.onap.so.adapters</groupId>
   <artifactId>so-oof-adapter</artifactId>
@@ -157,6 +157,35 @@
             <version>2.9.8</version>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <id>docker-build</id>
+            <phase>install</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <dockerFile>Dockerfile.so-cnf-adapter</dockerFile>
+              <executable>docker</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>build</argument>
+                <argument>-t</argument>
+                <argument>onap/so/${project.artifactId}:${project.version}</argument>
+                <argument>.</argument>
+              </arguments>
+              <buildArgs>
+                <JAR_FILE>${project.artifactId}-${project.version}.jar</JAR_FILE>
+                <ARTIFACT_ID>${project.artifactId}</ARTIFACT_ID>
+              </buildArgs>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
     <resources>
