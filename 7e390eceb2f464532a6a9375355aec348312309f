@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34445aa0_7b53a024",
+        "filename": "Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 897
+      },
+      "writtenOn": "2021-02-22T06:23:18Z",
+      "side": 1,
+      "message": "Should not be hard-coded jar version.",
+      "revId": "7e390eceb2f464532a6a9375355aec348312309f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
