@@ -9,6 +9,7 @@
   </parent>
   <groupId>org.onap.so.adapters</groupId>
   <artifactId>so-oof-adapter</artifactId>
+  <version>1.8.0-SNAPSHOT</version>
   <name>so-oof-adapter</name>
   <description>mso oof adapter</description>
 
