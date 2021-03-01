@@ -73,6 +73,11 @@
       <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.onap.so</groupId>
+      <artifactId>aai-client</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>${project.artifactId}-${project.version}</finalName>
