@@ -3,6 +3,7 @@
  * ONAP - SO
  * ================================================================================
  * Copyright (C) 2021 Wipro Limited. All rights reserved.
+ * Copyright (C) 2026 Deutsche Telekom AG.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +20,11 @@
  */
 package org.onap.so.adapters.oof.rest;
 
-import org.junit.Before;
-import org.junit.Rule;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.onap.so.adapters.oof.exceptions.OofAdapterException;
 import org.onap.so.adapters.oof.model.OofRequest;
@@ -39,53 +40,40 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class OofAdapterExceptionTest {
 
-	@MockBean
-	OofUtils oofutils;
+    @MockBean
+    OofUtils oofutils;
 
-	@Mock
-	RestTemplate mockrestTemplate;
+    @MockBean
+    RestTemplate restTemplate;
 
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
+    @Autowired
+    OofCallbackHandler oofCallbackHandler;
 
-	@Autowired
-	OofCallbackHandler oofCallbackHandler;
+    @Autowired
+    OofClient oofClient;
 
-	@Autowired
-	OofClient oofClient;
+    @BeforeEach
+    void prepareMocks() throws Exception {
+        Mockito.when(oofutils.getCamundaHeaders()).thenReturn(new HttpHeaders());
+        Mockito.when(oofutils.getCamundaMsgUrl(anyString(), anyString())).thenReturn("http://fake/message");
+        Mockito.when(oofutils.getOofHttpHeaders()).thenReturn(new HttpHeaders());
+        Mockito.when(oofutils.getOofurl(anyString())).thenReturn("http://fake/oof");
+    }
 
-	@Before
-	void prepareMocks() throws Exception {
-		Mockito.when(oofutils.getCamundaHeaders()).thenReturn(new HttpHeaders());
-		Mockito.when(oofutils.getCamundaMsgUrl(Mockito.anyString(), Mockito.anyString())).thenReturn("oofurl");
-		Mockito.when(oofutils.getOofHttpHeaders()).thenReturn(new HttpHeaders());
-		Mockito.when(oofutils.getOofurl(Mockito.anyString())).thenReturn("oofurl");
-	}
+    @Test
+    public void processCallbackThrowsOofAdapterExceptionOnRestClientException() {
+        Mockito.when(restTemplate.postForEntity(anyString(), any(), any()))
+                .thenThrow(new RestClientException("Connection refused"));
+        assertThrows(OofAdapterException.class, () -> oofCallbackHandler.processCallback(
+                "NSISelectionResponse", "d88da85c-d9e8-4f73-b837-3a72a431622a", "request-body"));
+    }
 
-	@Test
-	public void processCallbackTestException() throws Exception {
-		Mockito.when(mockrestTemplate.postForEntity(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenThrow(new RestClientException("Connection refused"));
-		exception.expect(OofAdapterException.class);
-		try {
-			oofCallbackHandler.processCallback("NSISelectionResponse", "d88da85c-d9e8-4f73-b837-3a72a431622a",
-					"request");
-		} catch (OofAdapterException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Test
-	public void callOofTestException() throws Exception {
-		OofRequest request = new OofRequest();
-		Mockito.when(mockrestTemplate.postForEntity(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenThrow(new RestClientException("Connection refused"));
-		exception.expect(OofAdapterException.class);
-		try {
-			oofClient.callOof(request);
-		} catch (OofAdapterException e) {
-			e.printStackTrace();
-		}
-	}
+    @Test
+    public void callOofThrowsOofAdapterExceptionOnRestClientException() throws OofAdapterException {
+        OofRequest request = new OofRequest();
+        request.setApiPath("/api/oof/selection/nsi/v1");
+        Mockito.when(restTemplate.postForEntity(anyString(), any(), any()))
+                .thenThrow(new RestClientException("Connection refused"));
+        assertThrows(OofAdapterException.class, () -> oofClient.callOof(request));
+    }
 }
-

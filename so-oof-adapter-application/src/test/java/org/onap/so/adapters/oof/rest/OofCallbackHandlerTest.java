@@ -23,8 +23,8 @@ package org.onap.so.adapters.oof.rest;
 import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
-import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.onap.so.adapters.oof.utils.OofUtils;
@@ -55,7 +55,7 @@ class OofCallbackHandlerTest {
     @MockBean
     RestTemplate mockrestTemplate;
 
-    @Before
+    @BeforeEach
     void prepareMocks() throws Exception {
         ResponseEntity<Object> responseEntity = new ResponseEntity<>(HttpStatus.OK);
         when(oofutils.getCamundaHeaders()).thenReturn(new HttpHeaders());
