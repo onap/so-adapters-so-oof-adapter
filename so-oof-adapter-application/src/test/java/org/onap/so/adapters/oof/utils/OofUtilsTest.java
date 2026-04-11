@@ -22,14 +22,12 @@ package org.onap.so.adapters.oof.utils;
 
 import static org.mockito.Mockito.when;
 import java.security.GeneralSecurityException;
-import javax.xml.bind.DatatypeConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.onap.so.utils.CryptoUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -51,11 +49,13 @@ class OofUtilsTest {
     }
 
 
+    @Test
     void testGetCamundaHeaders() throws GeneralSecurityException {
-        when(env.getRequiredProperty(Mockito.anyString())).thenReturn("dummyString");
-        when(CryptoUtils.decrypt(Mockito.anyString(), Mockito.anyString())).thenReturn("decryptedString");
+        when(env.getRequiredProperty(Mockito.anyString())).thenReturn("07a7159d3bf51a0e53be7a8f89699be7");
         HttpHeaders headers = oofUtils.getCamundaHeaders();
         Assertions.assertNotNull(headers);
+        Assertions.assertEquals(org.springframework.http.MediaType.APPLICATION_JSON,
+                headers.getContentType());
     }
 
 
