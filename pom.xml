@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.onap.so.adapters.so-oof-adapter</groupId>
     <artifactId>so-oof-adapter</artifactId>
-    <version>1.11.0-SNAPSHOT</version>
+    <version>1.12.0-SNAPSHOT</version>
     <name>SO OOF Adapter</name>
     <packaging>pom</packaging>
 
