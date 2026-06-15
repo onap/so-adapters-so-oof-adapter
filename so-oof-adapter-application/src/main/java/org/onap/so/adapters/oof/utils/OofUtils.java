@@ -23,7 +23,7 @@ package org.onap.so.adapters.oof.utils;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
 import org.onap.so.adapters.oof.constants.Constants;
 import org.onap.so.utils.CryptoUtils;
 import org.slf4j.Logger;
@@ -77,7 +77,7 @@ public class OofUtils {
         try {
             String userCredentials = CryptoUtils.decrypt(auth, msoKey);
             if (userCredentials != null) {
-                basicAuth = "Basic " + DatatypeConverter.printBase64Binary(userCredentials.getBytes());
+                basicAuth = "Basic " + Base64.getEncoder().encodeToString(userCredentials.getBytes());
             }
         } catch (GeneralSecurityException e) {
             logger.error("Security exception", e);
