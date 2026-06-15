@@ -20,12 +20,10 @@
 
 package org.onap.so.adapters.oof.utils;
 
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
 import org.onap.so.adapters.oof.constants.Constants;
-import org.onap.so.utils.CryptoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,22 +65,11 @@ public class OofUtils {
         return headers;
     }
 
-    /**
-     * @param auth
-     * @param msoKey
-     * @return
-     */
     protected String addAuthorizationHeader(String auth, String msoKey) {
-        String basicAuth = null;
-        try {
-            String userCredentials = CryptoUtils.decrypt(auth, msoKey);
-            if (userCredentials != null) {
-                basicAuth = "Basic " + DatatypeConverter.printBase64Binary(userCredentials.getBytes());
-            }
-        } catch (GeneralSecurityException e) {
-            logger.error("Security exception", e);
+        if (auth != null) {
+            return "Basic " + Base64.getEncoder().encodeToString(auth.getBytes());
         }
-        return basicAuth;
+        return null;
     }
 
     /**

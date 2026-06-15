@@ -31,11 +31,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.io.File;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.onap.so.utils.CryptoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -61,16 +59,8 @@ class OofCallbackHandlerIT {
     @DynamicPropertySource
     static void configureCamundaEndpoint(DynamicPropertyRegistry registry) {
         camundaServer.start();
-        String encryptedAuth;
-        try {
-            encryptedAuth = CryptoUtils.encrypt("testuser:testpass", MSO_KEY);
-        } catch (GeneralSecurityException e) {
-            encryptedAuth = "dummy_auth";
-        }
-        final String finalEncryptedAuth = encryptedAuth;
-
         registry.add("mso.camundaURL", camundaServer::baseUrl);
-        registry.add("mso.camundaAuth", () -> finalEncryptedAuth);
+        registry.add("mso.camundaAuth", () -> "testuser:testpass");
         registry.add("mso.msoKey", () -> MSO_KEY);
         registry.add("mso.workflow.message.endpoint",
                 () -> camundaServer.baseUrl() + "/mso/WorkflowMessage");
