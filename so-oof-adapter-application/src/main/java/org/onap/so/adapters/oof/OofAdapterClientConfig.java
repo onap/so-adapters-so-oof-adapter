@@ -20,14 +20,15 @@
 
 package org.onap.so.adapters.oof;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -41,7 +42,7 @@ public class OofAdapterClientConfig {
         HttpComponentsClientHttpRequestFactory requestFactory =
                 new HttpComponentsClientHttpRequestFactory(getHttpsClient());
         requestFactory.setConnectTimeout(60000);
-        requestFactory.setReadTimeout(60000);
+        requestFactory.setConnectionRequestTimeout(60000);
         return new RestTemplate(requestFactory);
     }
 
@@ -60,15 +61,12 @@ public class OofAdapterClientConfig {
         try {
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            };
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sc,
-                    new String[] {"TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"}, null, hostnameVerifier);
-            return HttpClients.custom().setSSLSocketFactory(sslsf).build();
+                    new String[] {"TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"}, null,
+                    NoopHostnameVerifier.INSTANCE);
+            HttpClientConnectionManager connectionManager =
+                    PoolingHttpClientConnectionManagerBuilder.create().setSSLSocketFactory(sslsf).build();
+            return HttpClients.custom().setConnectionManager(connectionManager).build();
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
