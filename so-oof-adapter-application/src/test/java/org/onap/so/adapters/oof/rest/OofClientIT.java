@@ -27,6 +27,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.io.File;
@@ -107,6 +108,20 @@ class OofClientIT {
 
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         oofServer.verify(postRequestedFor(urlEqualTo(oofPath)));
+    }
+
+    @Test
+    void callOof_whenOofReturnsNoContentType_returnsStatusWithoutContentType() throws IOException {
+        final String oofPath = "/api/oof/selection/nsi/v1";
+
+        oofServer.stubFor(post(urlEqualTo(oofPath))
+                .willReturn(aResponse().withStatus(202)));
+
+        ResponseEntity<String> response =
+                restTemplate.postForEntity("/so/adapters/oof/v1", buildHttpEntity(), String.class);
+
+        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+        assertNull(response.getHeaders().getContentType());
     }
 
     @Test

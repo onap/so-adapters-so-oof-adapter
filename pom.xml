@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.onap.so</groupId>
         <artifactId>so</artifactId>
-        <version>1.20.0</version>
+        <version>1.21.0</version>
     </parent>
     <groupId>org.onap.so.adapters.so-oof-adapter</groupId>
     <artifactId>so-oof-adapter</artifactId>
@@ -14,6 +14,7 @@
 
     <properties>
         <swagger.rt.rs.version>3.1.7</swagger.rt.rs.version>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
     <build>
         <plugins>
@@ -21,8 +22,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -92,4 +93,16 @@
         <module>so-oof-adapter-application</module>
         <module>packages</module>
     </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

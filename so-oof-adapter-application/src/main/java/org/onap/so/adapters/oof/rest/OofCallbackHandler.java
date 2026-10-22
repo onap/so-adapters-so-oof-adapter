@@ -60,7 +60,8 @@ public class OofCallbackHandler {
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(camundaMsgUrl, request, String.class);
             logger.debug("Response from BPMN : {} ", response);
-            return response;
+            return ResponseEntity.status(response.getStatusCode()).contentType(response.getHeaders().getContentType())
+                    .body(response.getBody());
         } catch (Exception e) {
             logger.warn("Error injecting message event into BPMN {} {} ", e.getCause(), e.getMessage());
             throw new OofAdapterException(e);

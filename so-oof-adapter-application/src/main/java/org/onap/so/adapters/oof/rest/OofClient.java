@@ -57,7 +57,8 @@ public class OofClient {
             HttpEntity<?> request = new HttpEntity<>(oofRequest.getRequestDetails(), utils.getOofHttpHeaders());
             ResponseEntity<String> response = restTemplate.postForEntity(oofUrl, request, String.class);
             logger.debug("Response from OOF : {} ", response);
-            return response;
+            return ResponseEntity.status(response.getStatusCode()).contentType(response.getHeaders().getContentType())
+                    .body(response.getBody());
         } catch (Exception e) {
             logger.warn("Error while calling OOF {} {} ", e.getCause(), e.getMessage());
             throw new OofAdapterException(e);
