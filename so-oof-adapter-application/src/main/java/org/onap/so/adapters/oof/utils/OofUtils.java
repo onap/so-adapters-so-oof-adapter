@@ -22,8 +22,8 @@ package org.onap.so.adapters.oof.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Base64;
 import org.onap.so.adapters.oof.constants.Constants;
+import org.onap.so.utils.BasicAuth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,16 +60,9 @@ public class OofUtils {
         acceptableMediaTypes.add(MediaType.ALL);
         headers.setAccept(acceptableMediaTypes);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, addAuthorizationHeader(env.getRequiredProperty(Constants.CAMUNDA_AUTH),
-                env.getRequiredProperty(Constants.MSO_KEY)));
+        headers.add(HttpHeaders.AUTHORIZATION, BasicAuth.header(env.getRequiredProperty(BasicAuth.SO_USERNAME_PROPERTY),
+                env.getRequiredProperty(BasicAuth.SO_PASSWORD_PROPERTY)));
         return headers;
-    }
-
-    protected String addAuthorizationHeader(String auth, String msoKey) {
-        if (auth != null) {
-            return "Basic " + Base64.getEncoder().encodeToString(auth.getBytes());
-        }
-        return null;
     }
 
     /**

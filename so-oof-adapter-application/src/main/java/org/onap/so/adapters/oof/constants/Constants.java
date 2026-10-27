@@ -23,9 +23,7 @@ public class Constants {
 
     public static final String OOF_ENDPOINT = "mso.oof.endpoint";
     public static final String OOF_AUTH = "mso.oof.auth";
-    public static final String MSO_KEY = "mso.msoKey";
     public static final String CAMUNDA_URL = "mso.camundaURL";
-    public static final String CAMUNDA_AUTH = "mso.camundaAuth";
     public static final String WORKFLOW_MESSAGE_ENPOINT = "mso.workflow.message.endpoint";
 
 }

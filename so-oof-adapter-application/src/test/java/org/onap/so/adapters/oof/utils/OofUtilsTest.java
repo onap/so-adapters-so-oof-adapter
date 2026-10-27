@@ -51,11 +51,13 @@ class OofUtilsTest {
 
     @Test
     void testGetCamundaHeaders() throws GeneralSecurityException {
-        when(env.getRequiredProperty(Mockito.anyString())).thenReturn("07a7159d3bf51a0e53be7a8f89699be7");
+        when(env.getRequiredProperty("so.auth.username")).thenReturn("bpel");
+        when(env.getRequiredProperty("so.auth.password")).thenReturn("password1$");
         HttpHeaders headers = oofUtils.getCamundaHeaders();
         Assertions.assertNotNull(headers);
         Assertions.assertEquals(org.springframework.http.MediaType.APPLICATION_JSON,
                 headers.getContentType());
+        Assertions.assertEquals("Basic YnBlbDpwYXNzd29yZDEk", headers.getFirst(HttpHeaders.AUTHORIZATION));
     }
 
 

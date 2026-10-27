@@ -29,6 +29,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import java.io.File;
 import java.io.IOException;
 import org.junit.jupiter.api.AfterAll;
@@ -51,8 +52,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class OofCallbackHandlerIT {
 
-    private static final String MSO_KEY = "07a7159d3bf51a0e53be7a8f89699be7";
-
     private static final WireMockServer camundaServer =
             new WireMockServer(wireMockConfig().dynamicPort());
 
@@ -60,8 +59,8 @@ class OofCallbackHandlerIT {
     static void configureCamundaEndpoint(DynamicPropertyRegistry registry) {
         camundaServer.start();
         registry.add("mso.camundaURL", camundaServer::baseUrl);
-        registry.add("mso.camundaAuth", () -> "testuser:testpass");
-        registry.add("mso.msoKey", () -> MSO_KEY);
+        registry.add("so.auth.username", () -> "testuser");
+        registry.add("so.auth.password", () -> "testpass");
         registry.add("mso.workflow.message.endpoint",
                 () -> camundaServer.baseUrl() + "/mso/WorkflowMessage");
     }
@@ -101,7 +100,8 @@ class OofCallbackHandlerIT {
         assertEquals(camundaResponse, response.getBody());
 
         camundaServer.verify(postRequestedFor(urlEqualTo(camundaPath))
-                .withHeader("Content-Type", equalTo("application/json")));
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withBasicAuth(new BasicCredentials("testuser", "testpass")));
     }
 
     @Test
