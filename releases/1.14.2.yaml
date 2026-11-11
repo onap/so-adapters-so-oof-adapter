@@ -1,0 +1,9 @@
+---
+distribution_type: 'container'
+container_release_tag: '1.14.2'
+project: 'so'
+log_dir: 'so-adapters-so-oof-adapter-maven-docker-stage-master/806/'
+ref: 'f81ccc8e102ae1de381a92a928506f580f1f0708'
+containers:
+    - name: 'so/so-oof-adapter'
+      version: '1.14.2-20261111T1046'
